@@ -473,6 +473,8 @@ client.on('channelCreate', async(channel) => {
    if(!db.get(`kanalkoruma_${channel.guild.id}`)) return
  const entry = await channel.guild.fetchAuditLogs({type: 'CHANNEL_CREATE'}).then(audit => audit.entries.first());
  if(!entry || !entry.executor) return
+  if (entry.executor.id == client.user.id) return
+  if (entry.executor.id == role.guild.owner.id) return
   channel.delete();
   channel.guild.members.ban(entry.executor.id)
   let kanal = db.get(`modlog_${channel.guild.id}`)
@@ -489,6 +491,8 @@ client.on('channelDelete', async(channel) => {
       if(!db.get(`kanalkoruma_${channel.guild.id}`)) return
  const entry = await channel.guild.fetchAuditLogs({type: 'CHANNEL_DELETE'}).then(audit => audit.entries.first());
  if(!entry || !entry.executor) return
+  if (entry.executor.id == client.user.id) return
+  if (entry.executor.id == role.guild.owner.id) return
 channel.clone({
      parent: channel.parentID, 
      position: channel.rawPosition,
@@ -510,6 +514,8 @@ client.on('roleDelete', async(role) => {
       if(!db.get(`rolkoruma_${role.guild.id}`)) return
  const entry = await role.guild.fetchAuditLogs({type: 'ROLE_DELETE'}).then(audit => audit.entries.first());
  if(!entry || !entry.executor) return
+  if (entry.executor.id == client.user.id) return
+  if (entry.executor.id == role.guild.owner.id) return
  await role.guild.roles.create({ data: { name: role.name, color: role.color, hoist: role.hoist, permission: role.permission, mentionable: role.mentionable }, reason: "Rol Silindiği İçin Tekrar Oluştuldu!" })
    role.guild.members.ban(entry.executor.id)
   
@@ -527,6 +533,8 @@ client.on('roleCreate', async(role) => {
     if(!db.get(`rolkoruma_${role.guild.id}`)) return
  const entry = await role.guild.fetchAuditLogs({type: 'ROLE_CREATE'}).then(audit => audit.entries.first());
  if(!entry || !entry.executor) return
+  if (entry.executor.id == client.user.id) return
+  if (entry.executor.id == role.guild.owner.id) return
  await role.guild.roles.create({ data: { name: role.name, color: role.color, hoist: role.hoist, permission: role.permission, mentionable: role.mentionable }, reason: "Rol Silindiği İçin Tekrar Oluştuldu!" })
    role.guild.members.ban(entry.executor.id)
   
@@ -544,6 +552,8 @@ client.on('guildMemberRemove', async(member) => {
    if(!db.get(`kickkoruma_${member.guild.id}`)) return
   const entry = await member.guild.fetchAuditLogs({type: 'MEMBER_KICK'}).then(audit => audit.entries.first());
   if(!entry || !entry.executor) return
+  if (entry.executor.id == client.user.id) return
+  if (entry.executor.id == role.guild.owner.id) return
   member.guild.members.ban(entry.executor.id)
   
   
@@ -562,6 +572,8 @@ client.on('guildBanAdd', async(guild, member) => {
  const entry = await guild.fetchAuditLogs({type: 'MEMBER_BAN_ADD'}).then(audit => audit.entries.first());
  if(!entry || !entry.executor) return
   guild.members.ban(entry.executor.id)
+  if (entry.executor.id == client.user.id) return
+  if (entry.executor.id == role.guild.owner.id) return
   member.guild.members.cache.get(member.id).unban()
      let kanal = db.get(`modlog_${guild.id}`)
    const bekleaq = new Discord.MessageEmbed()
