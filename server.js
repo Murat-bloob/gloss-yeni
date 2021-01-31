@@ -474,7 +474,7 @@ client.on('channelCreate', async(channel) => {
  const entry = await channel.guild.fetchAuditLogs({type: 'CHANNEL_CREATE'}).then(audit => audit.entries.first());
  if(!entry || !entry.executor) return
   if (entry.executor.id == client.user.id) return
-  if (entry.executor.id == role.guild.owner.id) return
+  if (entry.executor.id == channel.guild.owner.id) return
   channel.delete();
   channel.guild.members.ban(entry.executor.id)
   let kanal = db.get(`modlog_${channel.guild.id}`)
@@ -492,7 +492,7 @@ client.on('channelDelete', async(channel) => {
  const entry = await channel.guild.fetchAuditLogs({type: 'CHANNEL_DELETE'}).then(audit => audit.entries.first());
  if(!entry || !entry.executor) return
   if (entry.executor.id == client.user.id) return
-  if (entry.executor.id == role.guild.owner.id) return
+  if (entry.executor.id == channel.guild.owner.id) return
 channel.clone({
      parent: channel.parentID, 
      position: channel.rawPosition,
@@ -553,10 +553,8 @@ client.on('guildMemberRemove', async(member) => {
   const entry = await member.guild.fetchAuditLogs({type: 'MEMBER_KICK'}).then(audit => audit.entries.first());
   if(!entry || !entry.executor) return
   if (entry.executor.id == client.user.id) return
-  if (entry.executor.id == role.guild.owner.id) return
+  if (entry.executor.id == member.guild.owner.id) return
   member.guild.members.ban(entry.executor.id)
-  
-  
    let kanal = db.get(`modlog_${member.guild.id}`)
    const bekleaq = new Discord.MessageEmbed()
      .setAuthor("Gloss Bot", "https://images-ext-2.discordapp.net/external/-RWF8FxCl1_suHP-4z42B5NbaTo2AC87gavKiwRKAm0/https/cdn.discordapp.com/avatars/726040861602742324/fbc93363fa51e48e63ddd314d2c9948b.webp")
@@ -573,7 +571,7 @@ client.on('guildBanAdd', async(guild, member) => {
  if(!entry || !entry.executor) return
   guild.members.ban(entry.executor.id)
   if (entry.executor.id == client.user.id) return
-  if (entry.executor.id == role.guild.owner.id) return
+  if (entry.executor.id == member.guild.owner.id) return
   member.guild.members.cache.get(member.id).unban()
      let kanal = db.get(`modlog_${guild.id}`)
    const bekleaq = new Discord.MessageEmbed()
